@@ -1,0 +1,20 @@
+{
+    "name": "kasonyang/hitar",
+    "description": "A ORM Layer Base On Doctrine DBAL",
+    "authors": [
+        {
+            "name": "kasonyang",
+            "email": "i@kasonyang.com"
+        }
+    ],
+    "autoload":{
+        "psr-0" : {
+            "Hitar\\" : "libs"
+        }
+    },
+    "require": {
+        "doctrine/dbal": ">=2.3.4",
+        "kasonyang/phpcomment" : "1.0.0"
+    },
+    "licence" : "MIT"
+ }
