@@ -1,6 +1,6 @@
 {
     "name": "kasonyang/hitar",
-    "description": "A ORM Layer Base On Doctrine DBAL",
+    "description": "一个基于Doctrine DBAL的ORM框架",
     "authors": [
         {
             "name": "kasonyang",
@@ -13,7 +13,7 @@
         }
     },
     "require": {
-        "doctrine/dbal": ">=2.3.4",
+        "doctrine/dbal": "2.4.*",
         "kasonyang/phpcomment" : "1.0.0"
     },
     "licence" : "MIT"
