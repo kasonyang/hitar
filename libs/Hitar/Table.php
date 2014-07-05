@@ -19,6 +19,10 @@ class Table{
      */
     protected $queryBuilder;
     
+    /**
+     *
+     * @var \Doctrine\DBAL\Connection
+     */
     protected $connection;
 
     private $field;
@@ -82,14 +86,27 @@ class Table{
         $this->queryBuilder->select('*');
     }
     
+    /**
+     * 
+     * @param string $field
+     */
     function field($field){
         $this->field = $field;
     }
     
+    /**
+     * 
+     * @param string $field_name
+     */
     function addGroup($field_name){
         $this->queryBuilder->addGroupBy($field_name);
     }
     
+    /**
+     * 
+     * @param string $field_name
+     * @param string $mode set of "asc","desc"
+     */
     function addOrder($field_name,$mode = 'asc'){
         $this->queryBuilder->addOrderBy($field_name, $mode);
     }
@@ -126,10 +143,18 @@ class Table{
      * 
      */
     
+    /**
+     * 
+     * @param string $having
+     */
     function andHaving($having){
         $this->queryBuilder->andHaving($having);
     }
     
+    /**
+     * 
+     * @param string $having
+     */
     function orHaving($having){
         $this->queryBuilder->orHaving($having);
     }
@@ -170,7 +195,10 @@ class Table{
         $this->queryBuilder->innerJoin($this->alias, $table->getTableName(), $table->getTableAliasName(), $condition);
     }
     
-    
+    /**
+     * 
+     * @return \Doctrine\DBAL\Query\QueryBuilder
+     */
     private function getQueryBuilder(){
         $qb = clone $this->queryBuilder;
         if($this->where_statement){
@@ -184,6 +212,12 @@ class Table{
         return $qb;
     }
     
+    /**
+     * 
+     * @param int $limit
+     * @param int $offset
+     * @return \Doctrine\DBAL\Query\QueryBuilder
+     */
     private function getSelectQueryBuilder($limit = NULL,$offset = NULL){
         $builder = $this->getQueryBuilder();
         $builder->select($this->field);
@@ -197,12 +231,17 @@ class Table{
         return $builder;
     }
 
+    /**
+     * 
+     * @param string $field
+     * @return int
+     */
     function count($field = '*'){
         $builder = $this->getQueryBuilder();
         $builder->select($this->getConnection()->getDatabasePlatform()->getCountExpression($field) . ' AS TOTAL');
         $builder->from($this->table_name, $this->alias);
         $stmt = $builder->execute();
-        return $stmt->fetch()['TOTAL'];
+        return intval($stmt->fetch()['TOTAL']);
     }
 
     /**
@@ -216,12 +255,24 @@ class Table{
         return $builder->getSQL();
     }
     
+    /**
+     * 
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
     function selectData($limit=NULL,$offset = NULL){
         $builder = $this->getSelectQueryBuilder($limit,$offset);
         $stmt = $builder->execute();
         return $stmt->fetchAll();
     }
     
+    /**
+     * 
+     * @param int $limit
+     * @param int $offset
+     * @return array array of RecordBase
+     */
     function select($limit=NULL,$offset = NULL){
         $objs = [];
         $data = $this->selectData($limit,$offset);
@@ -249,7 +300,12 @@ class Table{
         return $conn->insert($this->table_name, $data, $type);
     }
     
-    function lastInsertId($seq_name){
+    /**
+     * 
+     * @param string|null $seq_name
+     * @return int
+     */
+    function lastInsertId($seq_name = null){
         return $this->getConnection()->lastInsertId($seq_name);
     }
     
@@ -297,14 +353,26 @@ class Table{
         return $qb->execute();
     }
     
+    /**
+     * 
+     * @return array array of string
+     */
     function getPrimaryKeys(){
         return $this->primary_keys;
     }
     
+    /**
+     * 
+     * @return string
+     */
     function getTableName(){
         return $this->table_name;
     }
     
+    /**
+     * 
+     * @return string
+     */
     function getTableAliasName(){
         return $this->alias;
     }
