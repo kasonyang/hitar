@@ -7,18 +7,37 @@
 
 namespace Hitar\Common;
 
+/**
+ * SQL解析类
+ */
 class SqlStatementParser {
     
+    /**
+     *
+     * @var array 类型映射数组
+     */
     private static $type_map = [
             's' => \PDO::PARAM_STR,
             'i' => \PDO::PARAM_INT,
             'e' => \PDO::PARAM_STMT
     ];
     
+    /**
+     *
+     * @var string
+     */
     private $prepare_sql;
     
+    /**
+     *
+     * @var array array of int
+     */
     private $types;
             
+    /**
+     * 
+     * @param string $sql sql语句，example：<code>"name=%s and age=%i"</code>
+     */
     function __construct($sql) {
         $sql_new = '';
         $type = [];
@@ -47,7 +66,7 @@ class SqlStatementParser {
     
     /**
      * 返回语句里包含的参数类型
-     * @return array of pdo常数
+     * @return array array of pdo常数
      */
     function getTypes(){
         return $this->types;
