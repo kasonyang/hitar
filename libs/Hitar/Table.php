@@ -51,9 +51,11 @@ class Table{
     
     private function fetchDataFromOrmObject($object){
         $data = [];
+        $ref_class = new \ReflectionClass($object);
         foreach($this->fields as $k => $f){
             /* @var $f \Doctrine\DBAL\Types\Type */
-            $d = $object->{$k};
+            $prop = $ref_class->getProperty($k);
+            $d = $prop->getValue($object);
             $data[$k] = $d;
         }
         return $data;
