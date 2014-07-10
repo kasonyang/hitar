@@ -29,6 +29,8 @@ class Table{
     
     private $fields = [];
     
+    private $generators = [];
+    
     private $primary_keys = [];
     
     private $orm_class;
@@ -64,8 +66,8 @@ class Table{
     private function getTypes(){
         $types = [];
         foreach($this->fields as $f){
-            /* @var $f \Doctrine\DBAL\Types\Type */
-            $types[] = $f->getBindingType();
+            /* @var $f \Hitar\FieldType */
+            $types[] = $f->getDbalType()->getBindingType();
         }
         return $types;
     }
@@ -84,6 +86,7 @@ class Table{
         $this->alias = $annotation->getTableAliasName();
         $this->fields = $annotation->getFields();
         $this->primary_keys = $annotation->getPrimaryKeys();
+        $this->generators = $annotation->getGenerators();
         $this->queryBuilder = new \Doctrine\DBAL\Query\QueryBuilder($this->getConnection());
         $this->queryBuilder->select('*');
     }
@@ -290,7 +293,8 @@ class Table{
      * @param RecordBase|array  $record
      * @return int 影响的行数
      */
-    function insert($record){
+    function insert(&$record){
+        $generate_values = [];
         $conn = $this->getConnection();
         if(is_object($record)){
             $data = $this->fetchDataFromOrmObject($record);
@@ -299,7 +303,39 @@ class Table{
             $data = $record;
             $type = [];
         }
-        return $conn->insert($this->table_name, $data, $type);
+        foreach($data as $d_key => $d_val){
+            if($d_val === NULL){
+                $key = key($data);
+                unset($data[$d_key]);
+                unset($type[$key]);
+            }
+        }
+        foreach($this->generators as $f_name => $g){
+            if(!$g->isGenerateAfterInsert()){
+                $g_value = $g->generate($this->getConnection());
+                $data[$f_name] = $g_value;
+                $generate_values[$f_name] = $g_value;
+            }
+        }
+        $insert_result = $conn->insert($this->table_name, $data, $type);
+        if(!$insert_result){
+            return $insert_result;
+        }
+        foreach($this->generators as $f_name => $g){
+            /* @var $g \Hitar\Id\IdGeneratorInterface */
+            if(!$g->isGenerateAfterInsert()){
+                continue;
+            }
+            $generate_values[$f_name] = $g->generate($this->getConnection());
+        }
+        foreach($generate_values as $gk => $gv){
+            if(is_object($record)){
+                $record->assign([$gk => $gv]);
+            }else{
+                $record[$gk] = $gv;
+            }
+        }
+        return $insert_result;
     }
     
     /**
