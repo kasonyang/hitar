@@ -14,7 +14,7 @@
     },
     "require": {
         "doctrine/dbal": "2.4.*",
-        "kasonyang/phpcomment" : "1.0.0"
+        "kasonyang/phpcomment" : "1.0.*"
     },
     "licence" : "MIT"
  }
