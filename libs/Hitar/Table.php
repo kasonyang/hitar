@@ -57,6 +57,7 @@ class Table{
         foreach($this->fields as $k => $f){
             /* @var $f \Doctrine\DBAL\Types\Type */
             $prop = $ref_class->getProperty($k);
+            $prop->setAccessible(TRUE);
             $d = $prop->getValue($object);
             $data[$k] = $d;
         }
