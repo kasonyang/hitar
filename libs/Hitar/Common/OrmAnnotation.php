@@ -47,7 +47,7 @@ class OrmAnnotation{
     
     private function getFieldByTagVaule($tag_value){
         $value_and_params = $this->parseTagValueAndParameters($tag_value);
-        $type = $value_and_params['value'];
+        $type = trim($value_and_params['value']);
         $params = $value_and_params['parameters'];
         return new \Hitar\FieldType($params, \Doctrine\DBAL\Types\Type::getType($type));
     }
