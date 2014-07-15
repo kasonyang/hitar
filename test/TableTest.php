@@ -12,16 +12,8 @@ class TableTest extends PHPUnit_Framework_TestCase{
     function testTable(){
         $tb = Test::table();
 
-        $sm = $tb->getConnection()->getSchemaManager();
-        $schema = $sm->createSchema();
-        $new_tb =$schema->createTable('test');
-        $new_tb->addColumn('nickname','string',['length' => 100]);
-        $sqls = $schema->toSql($tb->getConnection()->getDatabasePlatform());
-        foreach($sqls as $q){
-            $tb->getConnection()->exec($q);
-        }
-
-        $tb->insert(['nickname' => 'z3']);
+        $new_data = ['nickname' => 'z3'];
+        $tb->insert($new_data);
         
         $this->assertEquals(1, $tb->count());
         
