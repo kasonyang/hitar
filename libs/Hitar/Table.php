@@ -284,7 +284,10 @@ class Table{
         $data = $this->selectData($limit,$offset);
         $orm_class = $this->orm_class;
         foreach($data as $d){
-            $objs[] = new $orm_class(NULL,$d);
+            /* @var $obj_new RecordBase */
+            $obj_new = new $orm_class();
+            $obj_new->assign($d);
+            $objs[] = $obj_new;
         }
         return $objs;
     }
