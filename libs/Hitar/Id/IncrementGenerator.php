@@ -8,7 +8,7 @@
 
 namespace Hitar\Id;
 
-class IncrementGenerator implements Hitar\Id\IdGeneratorInterface {
+class IncrementGenerator implements IdGeneratorInterface {
     
     function __construct($params = []) {
         
