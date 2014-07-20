@@ -38,16 +38,12 @@ class TableTest extends PHPUnit_Framework_TestCase{
         $obj_list = $tb->select();
         $obj = $obj_list[0];
         /* @var $obj Test */
-        $this->assertEquals(TRUE, $obj->exist());
         $this->assertEquals('z3', $obj->nickname);
         
-        $obj->nickname = 'li4';
-        $save_ret = $obj->save();
-        $this->assertEquals(true, $save_ret);
-        $this->assertEquals([['nickname' => 'li4']], $tb->selectData());
         $tb->delete();
         
-        $test = new Test(['nickname' => 'hehe']);
+        $test = new Test();
+        $test->nickname = 'hehe';
         $this->assertEquals(TRUE, $test->save());
         $this->assertEquals('hehe', Test::table()->selectData()[0]['nickname']);
         $test->delete();
