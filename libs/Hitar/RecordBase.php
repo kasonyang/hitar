@@ -74,10 +74,10 @@ abstract class RecordBase {
             $exist = $tb->count() > 0;
         }
         if($exist){
-            return $this->getTable()->update($this) > 0;
+            return $tb->update($this) > 0;
         }else{
             if($auto_create){
-                return $this->getTable()->insert($this) > 0;
+                return self::table()->insert($this) > 0;
             }else{
                 return false;
             }
