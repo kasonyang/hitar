@@ -27,9 +27,9 @@ class TableExample extends \Hitar\RecordBase {
 
     /**
      *
+     * @field integer
      * @primary
      * @generator guid
-     * @field string(length:100)
      */
     public $id;
 
