@@ -117,12 +117,24 @@ class Table{
         $this->queryBuilder->addOrderBy($field_name, $mode);
     }
     
+    function clearWhere(){
+        $this->where_statement = array();
+        $this->where_params = array();
+        $this->where_types = array();
+    }
+
+
     /**
      * 
-     * @param string $where where字串
+     * @param string|array $where where字串
      * @param array $params
      */
     function where($where,$params = []){
+        $this->clearWhere();
+        return $this->andWhere($where, $params);
+    }
+    
+    function andWhere($where,$params = []){
         if(is_array($where)){
             $and = $this->queryBuilder->expr()->andX();
             foreach($where as $k => $v){
@@ -132,17 +144,17 @@ class Table{
             $where = $and;
         }
         $stmt = new Common\SqlStatementParser($where);
-        $this->where_types = $stmt->getTypes();
-        $this->where_params = $params;
-        $this->where_statement = $stmt->getPrepareSql();
+        $this->where_types = array_merge($this->where_types, $stmt->getTypes());
+        $this->where_params = array_merge($this->where_params, $params);
+        $where_statement = $stmt->getPrepareSql();
+        if($this->where_statement){
+            $where_statement = "({$this->where_statement}) AND ($where_statement)";
+        }
+        $this->where_statement = $where_statement;
         return $this;
     }
     
     /*
-    function andWhere($where){
-        $this->queryBuilder->andWhere($where);
-    }
-    
     function orWhere($where){
         $this->queryBuilder->orWhere($where);
     }
