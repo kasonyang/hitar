@@ -29,7 +29,8 @@ class TableTest extends PHPUnit_Framework_TestCase{
         $tb_new->where('nickname=%s', ['w5']);
         //$this->assertEquals('SELEC', $tb->buildSelect());
         $this->assertEquals([['nickname' => 'w5']], $tb_new->selectData());
-        $tb_new->where(['nickname' =>'w5']);
+        $tb_new->clearWhere();
+        $tb_new->andWhere(['nickname' =>'w5']);
         //$this->assertEquals('SELEC', $tb->buildSelect());
         $this->assertEquals([['nickname' => 'w5']], $tb_new->selectData());
         $this->assertEquals(1, $tb_new->update(['nickname' => 'z3'])) ;
