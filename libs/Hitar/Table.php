@@ -82,7 +82,7 @@ class Table{
         $annotation = new Common\OrmAnnotation($orm);
         $this->table_name = $annotation->getTableName();
         if(!$this->table_name){
-            throw new \Exception('Table name undefined');
+            Exception::noTableName();
         }
         $this->alias = $annotation->getTableAliasName();
         $this->fields = $annotation->getFields();
@@ -369,6 +369,9 @@ class Table{
      * @return string Description
      */
     function update($data){
+        if(!$this->primary_keys){
+            Exception::noPrimaryKey();
+        }
         $builder = new \Doctrine\DBAL\Query\QueryBuilder($this->getConnection());
         $params = [];
         $param_types = [];
@@ -402,6 +405,9 @@ class Table{
      * @return string Description
      */
     function delete(){
+        if(!$this->primary_keys){
+            Exception::noPrimaryKey();
+        }
         $qb = $this->getQueryBuilder();
         $qb->delete($this->table_name);
         return $qb->execute();
