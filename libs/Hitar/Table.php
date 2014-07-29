@@ -129,27 +129,34 @@ class Table{
      * @param string|array $where where字串
      * @param array $params
      */
-    function where($where,$params = []){
+    function where($where,$param = null , $_ = null){
         $this->clearWhere();
-        return $this->andWhere($where, $params);
+        return call_user_func_array(array($this,'andWhere'), func_get_args());
     }
     
-    function andWhere($where,$params = []){
+    function andWhere($where,$param = null , $_ = null){
+        $params = array();
+        $types = array();
         if(is_array($where)){
             $and = $this->queryBuilder->expr()->andX();
             foreach($where as $k => $v){
                 $and->add($this->queryBuilder->expr()->eq($k, '?'));
                 $params [] = $v;
+                $types[] = \PDO::PARAM_STR;
             }
-            $where = $and;
+            $where_statement = (string)$and;
+        }else{
+            $stmt = new Common\SqlStatementParser($where);
+            $types  = $stmt->getTypes();
+            $params = func_get_args();
+            unset($params[0]);
+            $where_statement = $stmt->getPrepareSql();
         }
-        $stmt = new Common\SqlStatementParser($where);
-        $this->where_types = array_merge($this->where_types, $stmt->getTypes());
-        $this->where_params = array_merge($this->where_params, $params);
-        $where_statement = $stmt->getPrepareSql();
         if($this->where_statement){
             $where_statement = "({$this->where_statement}) AND ($where_statement)";
         }
+        $this->where_types = array_merge($this->where_types, $types);
+        $this->where_params = array_merge($this->where_params, $params);
         $this->where_statement = $where_statement;
         return $this;
     }
