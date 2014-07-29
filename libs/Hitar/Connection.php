@@ -7,10 +7,6 @@
 
 namespace Hitar;
 
-class ConnectException extends \Exception{
-    
-}
-
 class Connection {
     /**
      * 
@@ -21,7 +17,7 @@ class Connection {
             return \Doctrine\DBAL\DriverManager::getConnection(DatabaseManager::getCurrentDatabase());
         }  catch (\Doctrine\DBAL\DBALException $ex){
             /* @var $ex \Doctrine\DBAL\DBALException */
-            throw new ConnectException('Failed to connect the database:' . $ex->getMessage());
+            Exception::failToConnectDatabase($ex->getMessage());
         }
     }
     

@@ -7,10 +7,6 @@
 
 namespace Hitar;
 
-class DatabaseNotExistException extends \Exception{
-    
-}
-
 class DatabaseManager{
     
     private static $database_list = [];
@@ -32,7 +28,7 @@ class DatabaseManager{
         if(self::$current_database_name){
             return self::$database_list[self::$current_database_name];
         }else{
-            throw new DatabaseNotExistException;
+            Exception::noConnection();
         }
     }
     
@@ -40,7 +36,7 @@ class DatabaseManager{
         if(isset(self::$database_list[$name])){
             return self::$database_list[$name];
         }else{
-            throw new DatabaseNotExistException;
+            Exception::noConnection();
         }
     }
     
@@ -49,7 +45,7 @@ class DatabaseManager{
         if(isset(self::$database_list[$name])){
             self::$current_database_name = $name;
         }else{
-            throw new DatabaseNotExistException;
+            Exception::noConnection();
         }
     }
     

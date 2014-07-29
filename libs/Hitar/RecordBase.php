@@ -55,7 +55,6 @@ abstract class RecordBase {
      * @param array $pks_array 主键名-值关联数组
      * @param array $data_array 非主键列名-值数组，若此参数缺省，构造函数会自动
      * 读取数据表，以取得非主键列的值
-     * @throws HitarRecordConstructException
      */
     function __construct() {
         $this->primary_keys = self::table()->getPrimaryKeys();
