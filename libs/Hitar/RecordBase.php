@@ -107,5 +107,21 @@ abstract class RecordBase {
         }
         return $this;
     }
+    
+    function beforeInsert(){
+        
+    }
+    
+    function afterInsert(){
+        
+    }
+    
+    function beforeUpdate(){
+        
+    }
+    
+    function afterUpdate(){
+        
+    }
 
 }

@@ -320,6 +320,7 @@ class Table{
         $generate_values = [];
         $conn = $this->getConnection();
         if(is_object($record)){
+            $record->beforeInsert();
             $data = $this->fetchDataFromOrmObject($record);
             $type = $this->getTypes();
         }else{
@@ -358,6 +359,9 @@ class Table{
                 $record[$gk] = $gv;
             }
         }
+        if(is_object($record)){
+            $record->afterInsert();
+        }
         return $insert_result;
     }
     
@@ -372,19 +376,22 @@ class Table{
     
     /**
      * 
-     * @param array|object $data
+     * @param RecordBase|array $object
      * @return string Description
      */
-    function update($data){
+    function update($object){
         if(!$this->primary_keys){
             Exception::noPrimaryKey();
         }
         $builder = new \Doctrine\DBAL\Query\QueryBuilder($this->getConnection());
         $params = [];
         $param_types = [];
-        if(is_object($data)){
-            $data = $this->fetchDataFromOrmObject($data);
+        if(is_object($object)){
+            $object->beforeUpdate();
+            $data = $this->fetchDataFromOrmObject($object);
             $types = $this->getTypes();
+        }else{
+            $data = $object;
         }
         $data_index = 0;
         foreach($data as $k => $v){
@@ -403,6 +410,9 @@ class Table{
         }
         $builder->setParameters($params, $param_types);
         $builder->update($this->table_name);
+        if(is_object($object)){
+            $object->afterUpdate();
+        }
         return $builder->execute();
     }
     
