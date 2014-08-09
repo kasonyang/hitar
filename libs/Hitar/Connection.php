@@ -8,6 +8,10 @@
 namespace Hitar;
 
 class Connection {
+    
+    private static $connection;
+
+
     /**
      * 
      * @return \Doctrine\DBAL\Connection
@@ -19,6 +23,13 @@ class Connection {
             /* @var $ex \Doctrine\DBAL\DBALException */
             Exception::failToConnectDatabase($ex->getMessage());
         }
+    }
+    
+    static function getConnection(){
+        if(!self::$connection){
+            self::$connection = self::createConnection();
+        }
+        return self::$connection;
     }
     
 }

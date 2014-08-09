@@ -46,7 +46,7 @@ class Table{
      */
     function getConnection(){
         if(!$this->connection){
-            $this->connection = Connection::createConnection();
+            $this->connection = Connection::getConnection();
         }
         return $this->connection;
     }
