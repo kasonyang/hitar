@@ -305,7 +305,9 @@ class Table{
         foreach($data as $d){
             /* @var $obj_new RecordBase */
             $obj_new = new $orm_class();
+            $obj_new->beforeSelect();
             $obj_new->assign($d);
+            $obj_new->afterSelect();
             $objs[] = $obj_new;
         }
         return $objs;

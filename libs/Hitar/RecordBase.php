@@ -108,6 +108,14 @@ abstract class RecordBase {
         return $this;
     }
     
+    function beforeSelect(){
+        
+    }
+    
+    function afterSelect(){
+        
+    }
+    
     function beforeInsert(){
         
     }
